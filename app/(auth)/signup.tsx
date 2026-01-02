@@ -1,11 +1,16 @@
+import { Colors } from '@/constants/theme'
 import { supabase } from '@/lib/supabase'
+import { Ionicons } from '@react-native-vector-icons/ionicons'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native'
 
 export default function signUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const scheme = useColorScheme() ?? 'light'
+  const theme = Colors[scheme]
   
 	const signUp = async () => {
 		const { error } = await supabase.auth.signUp({
@@ -19,42 +24,54 @@ export default function signUp() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
     >
+      <Image style={styles.image} source={require('@/assets/images/register.png')} />
       <Pressable style={styles.backButton} onPress={() => router.back() }>
-        <Text style={styles.backButtonText}>←</Text>
+        <Text style={styles.backButtonText}>
+          <Ionicons name="chevron-back" color="#ffffff" size={20} />
+        </Text>
       </Pressable>
 
-      <View style={styles.card}>
-        <Text style={styles.title}>Register</Text>
-        <Text style={styles.subtitle}>Please register to login.</Text>
+      <Text style={[styles.title, { color: theme.text }]}>Register</Text>
+      <Text style={[styles.subtitle, { color: theme.text }]}>Please register to login.</Text>
 
-        <TextInput
-          placeholder="Email"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-        />
+      <TextInput
+        placeholder="Email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
+      />
 
-        <TextInput
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          style={styles.input}
-        />
+      <TextInput
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
+      />
 
-        <Pressable style={styles.primaryButton} onPress={signUp}>
-          <Text style={styles.primaryButtonText}>Sign Up</Text>
+      <View style={styles.footer}>
+        <Pressable style={({ pressed }) => [
+            styles.primaryButton,
+            pressed && styles.primaryButtonPressed,
+          ]} 
+          onPress={signUp}>
+          <Text style={styles.primaryText}>Sign Up</Text>
         </Pressable>
 
-        <Pressable style={styles.secondaryButton} onPress={() => router.replace('/login')}>
-          <Text style={styles.secondaryButtonText}>
-            Already have an account? Sign in
-          </Text>
-        </Pressable>
+        <View style={styles.subText}>
+          <Text style={{ color: theme.text }}>Already have an account? </Text>
+          <Pressable style={({ pressed }) => pressed && styles.signInTextPressed}
+            onPress={() => router.replace('/login')}
+          >
+            <Text style={styles.signInText}>
+              Sign in
+            </Text>
+          </Pressable>
+        </View>
       </View>
     </KeyboardAvoidingView>
   )
@@ -63,77 +80,81 @@ export default function signUp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a', // slate-900
     justifyContent: 'center',
-    padding: 20,
+    padding: 25,
   },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 10,
+  image: {
+    objectFit: 'contain',
+    height: 200,
+    marginBottom: 25,
+    alignSelf: 'center',
   },
   backButton: {
     position: 'absolute',
-    top: 48,
+    top: 75,
     left: 16,
     padding: 12,
     zIndex: 20,
-    backgroundColor: '#1e293b', // slate-800
+    backgroundColor: Colors.primary, // slate-800
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 4,
   },
   backButtonText: {
     color: '#cbd5f5',
     fontSize: 16,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 6,
-    color: '#0f172a',
+    fontSize: 50,
+    fontWeight: '800',
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#64748b', // slate-500
-    marginBottom: 24,
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 25,
   },
   input: {
     height: 48,
-    borderWidth: 1,
-    borderColor: '#e2e8f0', // slate-200
-    borderRadius: 10,
+    borderRadius: 25,
     paddingHorizontal: 14,
     fontSize: 16,
-    marginBottom: 14,
-    backgroundColor: '#f8fafc',
+    marginBottom: 25,
   },
   primaryButton: {
-    height: 48,
-    backgroundColor: '#2563eb', // blue-600
-    borderRadius: 10,
-    justifyContent: 'center',
+    width: '100%',
+    backgroundColor: Colors.primary,
+    paddingVertical: 15,
+    borderRadius: 50,
     alignItems: 'center',
-    marginTop: 8,
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
   },
-  primaryButtonText: {
+  primaryButtonPressed: {
+    transform: [{ scale: 0.99 }],
+    opacity: 0.85,
+  },
+  primaryText: {
     color: '#ffffff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
-  secondaryButton: {
-    marginTop: 16,
+  signInText: {
+    color: Colors.primary,
+    fontWeight: '700',
+  },
+  signInTextPressed: {
+    opacity: 0.85,
+  },
+  footer: {
     alignItems: 'center',
+    width: '100%',
+    gap: 20,
   },
-  secondaryButtonText: {
-    color: '#2563eb',
-    fontSize: 14,
-    fontWeight: '500',
+  subText: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 })

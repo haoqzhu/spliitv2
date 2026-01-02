@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { Ionicons } from '@react-native-vector-icons/ionicons'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Alert, Image, Pressable, StyleSheet, Text, TextInput, View, useColorScheme } from 'react-native'
+import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View, useColorScheme } from 'react-native'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -26,7 +26,10 @@ export default function Login() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined} 
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
       <Image style={styles.image} source={require('@/assets/images/login.png')} />
       <Pressable style={styles.backButton} onPress={() => router.back() }>
         <Text style={styles.backButtonText}>
@@ -43,7 +46,7 @@ export default function Login() {
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
+        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
       />
 
       <TextInput
@@ -51,7 +54,7 @@ export default function Login() {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
-        style={styles.input}
+        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
       />
 
       <View style={styles.footer}>
@@ -65,14 +68,16 @@ export default function Login() {
 
         <View style={styles.subText}>
           <Text style={{ color: theme.text }}>Don't have an account? </Text>
-          <Pressable onPress={() => router.replace('/signup')}>
+          <Pressable style={({ pressed }) => pressed && styles.signUpTextPressed} 
+            onPress={() => router.replace('/signup')}
+          >
             <Text style={styles.signUpText}>
               Sign up
             </Text>
           </Pressable>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -81,7 +86,7 @@ const styles = StyleSheet.create({
     objectFit: 'contain',
     height: 200,
     marginBottom: 25,
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   container: {
     flex: 1,
@@ -118,7 +123,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 16,
     marginBottom: 25,
-    backgroundColor: '#f8fafc',
   },
   primaryButton: {
     width: '100%',
@@ -144,6 +148,9 @@ const styles = StyleSheet.create({
   signUpText: {
     color: Colors.primary,
     fontWeight: '700',
+  },
+  signUpTextPressed: {
+    opacity: 0.85,
   },
   footer: {
     alignItems: 'center',
