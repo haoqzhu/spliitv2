@@ -42,30 +42,64 @@ export default function signUp() {
       <Text style={[styles.title, { color: theme.text }]}>Register</Text>
       <Text style={[styles.subtitle, { color: theme.text }]}>Please register to login.</Text>
 
-      <TextInput
+      {/* <TextInput
         placeholder="Email"
         autoCapitalize="none"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
         style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
-      />
+      /> */}
 
-      <TextInput
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
-      />
+      <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
+        <Ionicons
+          name="mail-outline"
+          size={20}
+          color={theme.text}
+          style={[styles.inputIcon, { color: theme.icon }]}
+        />
+        <TextInput
+          placeholder="Email"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+          spellCheck={false}
+          style={[styles.inputWithIcon, { color: theme.text }]}
+        />
+      </View>
 
-      <TextInput
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
-      />
+      <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
+        <Ionicons
+          name="lock-closed-outline"
+          size={20}
+          color={theme.text}
+          style={[styles.inputIcon, { color: theme.icon }]}
+        />
+        <TextInput
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          style={[styles.inputWithIcon, { color: theme.text }]}
+        />
+      </View>
+
+      <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
+        <Ionicons
+          name="lock-closed-outline"
+          size={20}
+          color={theme.text}
+          style={[styles.inputIcon, { color: theme.icon }]}
+        />
+        <TextInput
+          placeholder="Confirm Password"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          style={[styles.inputWithIcon, { color: theme.text }]}
+        />
+      </View>
 
       <View style={styles.footer}>
         <Pressable style={({ pressed }) => [
@@ -127,13 +161,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 25,
   },
-  input: {
-    height: 48,
-    borderRadius: 25,
-    paddingHorizontal: 14,
-    fontSize: 16,
-    marginBottom: 25,
-  },
   primaryButton: {
     width: '100%',
     backgroundColor: Colors.primary,
@@ -170,5 +197,20 @@ const styles = StyleSheet.create({
   subText: {
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 48,
+    borderRadius: 25,
+    paddingHorizontal: 16,
+    marginBottom: 25,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  inputWithIcon: {
+    flex: 1,
+    fontSize: 16,
   },
 })
