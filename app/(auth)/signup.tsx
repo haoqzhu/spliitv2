@@ -8,11 +8,17 @@ import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Te
 export default function signUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const scheme = useColorScheme() ?? 'light'
   const theme = Colors[scheme]
   
 	const signUp = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Passwords do not match')
+      return
+    }
+
 		const { error } = await supabase.auth.signUp({
 			email,
 			password,
@@ -50,6 +56,14 @@ export default function signUp() {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
+      />
+
+      <TextInput
+        placeholder="Confirm Password"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
         style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
       />
 
