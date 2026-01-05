@@ -33,7 +33,7 @@ export default function Login() {
       <Image style={styles.image} source={require('@/assets/images/login.png')} />
       <Pressable style={styles.backButton} onPress={() => router.back() }>
         <Text style={styles.backButtonText}>
-          <Ionicons name="chevron-back" color="#ffffff" size={20} />
+          <Ionicons name="chevron-back" color="#f4f4f0" size={20} />
         </Text>
       </Pressable>
 

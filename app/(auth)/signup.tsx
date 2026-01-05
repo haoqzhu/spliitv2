@@ -9,6 +9,7 @@ export default function signUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [username, setUsername] = useState('')
 
   const scheme = useColorScheme() ?? 'light'
   const theme = Colors[scheme]
@@ -19,12 +20,21 @@ export default function signUp() {
       return
     }
 
-		const { error } = await supabase.auth.signUp({
+		const { data, error } = await supabase.auth.signUp({
 			email,
 			password,
 		})
 
   	if (error) Alert.alert(error.message)
+
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({ username })
+      .eq('id', data.user?.id)
+
+    if (profileError) {
+      Alert.alert(profileError.message)
+    }
 	}
 
   return (
@@ -35,7 +45,7 @@ export default function signUp() {
       <Image style={styles.image} source={require('@/assets/images/register.png')} />
       <Pressable style={styles.backButton} onPress={() => router.back() }>
         <Text style={styles.backButtonText}>
-          <Ionicons name="chevron-back" color="#ffffff" size={20} />
+          <Ionicons name="chevron-back" color="#ECEDEE" size={20} />
         </Text>
       </Pressable>
 
@@ -50,6 +60,21 @@ export default function signUp() {
         onChangeText={setEmail}
         style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
       /> */}
+
+      <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
+        <Ionicons
+          name="person-outline"
+          size={20}
+          style={[styles.inputIcon, { color: theme.icon }]}
+        />
+        <TextInput
+          placeholder="Username"
+          autoCapitalize="none"
+          value={username}
+          onChangeText={setUsername}
+          style={[styles.inputWithIcon, { color: theme.text }]}
+        />
+      </View>
 
       <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
         <Ionicons
@@ -204,7 +229,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 25,
     paddingHorizontal: 16,
-    marginBottom: 25,
+    marginBottom: 15,
   },
   inputIcon: {
     marginRight: 10,
