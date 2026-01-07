@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native'
 
 export default function signUp() {
+  const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -25,15 +26,21 @@ export default function signUp() {
 			password,
 		})
 
-  	if (error) Alert.alert(error.message)
+  	if (error) {
+      Alert.alert(error.message)
+      return
+    }
 
     const { error: profileError } = await supabase
       .from('profiles')
-      .update({ username })
-      .eq('id', data.user?.id)
+      .upsert({
+        id: data.user?.id,
+        username,
+      })
 
     if (profileError) {
       Alert.alert(profileError.message)
+      return
     }
 	}
 
@@ -50,16 +57,7 @@ export default function signUp() {
       </Pressable>
 
       <Text style={[styles.title, { color: theme.text }]}>Register</Text>
-      <Text style={[styles.subtitle, { color: theme.text }]}>Please register to login.</Text>
-
-      {/* <TextInput
-        placeholder="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
-      /> */}
+      <Text style={[styles.subtitle, { color: theme.text }]}>Create an account to continue.</Text>
 
       <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
         <Ionicons
