@@ -8,15 +8,15 @@ export default function TabLayout() {
         <Icon sf="house.fill" drawable="custom_android_drawable" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="search">
-        <Icon sf="magnifyingglass" drawable="custom_settings_drawable" />
+        <Icon sf="magnifyingglass" drawable="custom_android_drawable" />
         <Label>Search</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="receipts">
-        <Icon sf="doc.text.fill" drawable="custom_settings_drawable" />
+        <Icon sf="doc.text.fill" drawable="custom_android_drawable" />
         <Label>Receipts</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="account">
-        <Icon sf="person.crop.circle.fill" drawable="custom_settings_drawable" />
+        <Icon sf="person.crop.circle.fill" drawable="custom_android_drawable" />
         <Label>Account</Label>
       </NativeTabs.Trigger>
     </NativeTabs>

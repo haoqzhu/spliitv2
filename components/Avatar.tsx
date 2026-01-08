@@ -1,15 +1,18 @@
 import { supabase } from '@/lib/supabase'
+import { Image } from 'expo-image'
 import * as ImagePicker from 'expo-image-picker'
 import { useEffect, useState } from 'react'
-import { Alert, Button, Image, StyleSheet, View } from 'react-native'
+import { Alert, Button, StyleSheet, Text, View } from 'react-native'
 
 interface Props {
-  size: number
+  size?: number
   url: string | null
-  onUpload: (filePath: string) => void
+  onUpload?: (filePath: string) => void
+  placeholderText?: string
+  placeholderColor?: string
 }
 
-export default function Avatar({ url, size = 150, onUpload }: Props) {
+export default function Avatar({ url, size = 150, onUpload, placeholderText, placeholderColor }: Props) {
   const [uploading, setUploading] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const avatarSize = { height: size, width: size }
@@ -76,7 +79,9 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
         throw uploadError
       }
 
-      onUpload(data.path)
+      if (onUpload) {
+        onUpload(data.path)
+      }
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message)
@@ -94,18 +99,27 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
         <Image
           source={{ uri: avatarUrl }}
           accessibilityLabel="Avatar"
-          style={[avatarSize, styles.avatar, styles.image]}
+          style={[avatarSize, styles.avatar]}
+          contentFit="cover"
         />
       ) : (
-        <View style={[avatarSize, styles.avatar, styles.noImage]} />
+        <View style={[avatarSize, styles.avatar, styles.noImage, { backgroundColor: placeholderColor || '#333' }]}>
+          {placeholderText && (
+            <Text style={styles.placeholderText}>
+              {placeholderText}
+            </Text>
+          )}
+        </View>
       )}
-      <View>
-        <Button
-          title={uploading ? 'Uploading ...' : 'Upload'}
-          onPress={uploadAvatar}
-          disabled={uploading}
-        />
-      </View>
+      {onUpload && (
+        <View>
+          <Button
+            title={uploading ? 'Uploading ...' : 'Upload'}
+            onPress={uploadAvatar}
+            disabled={uploading}
+          />
+        </View>
+      )}
     </View>
   )
 }
@@ -115,16 +129,15 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     overflow: 'hidden',
     maxWidth: '100%',
-  },
-  image: {
-    objectFit: 'cover',
-    paddingTop: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   noImage: {
-    backgroundColor: '#333',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'rgb(200, 200, 200)',
-    borderRadius: 5,
+    borderRadius: 25,
+  },
+  placeholderText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#f4f4f0',
   },
 })
