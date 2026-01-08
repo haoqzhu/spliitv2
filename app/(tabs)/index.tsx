@@ -9,12 +9,22 @@ import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet } from 'react-native';
 
+function getGreeting() {
+  const hour = new Date().getHours()
+
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
 export default function HomeScreen() {
   const session = useAuth()
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState('')
+  const [greeting, setGreeting] = useState('Welcome')
 
   useEffect(() => {
+    setGreeting(getGreeting())
     if (session) getUsername()
   }, [session])
 
@@ -51,7 +61,9 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome back, {username}</ThemedText>
+        <ThemedText type="title">
+          {greeting}{username ? `, ${username}` : ''}
+        </ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
