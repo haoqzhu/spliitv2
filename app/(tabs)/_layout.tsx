@@ -7,9 +7,13 @@ export default function TabLayout() {
         <Label>Home</Label>
         <Icon sf="house.fill" drawable="custom_android_drawable" />
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="explore">
-        <Icon sf="ellipsis.circle" drawable="custom_settings_drawable" />
-        <Label>Explore</Label>
+      <NativeTabs.Trigger name="search">
+        <Icon sf="magnifyingglass" drawable="custom_settings_drawable" />
+        <Label>Search</Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="receipts">
+        <Icon sf="doc.text.fill" drawable="custom_settings_drawable" />
+        <Label>Receipts</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="account">
         <Icon sf="person.crop.circle.fill" drawable="custom_settings_drawable" />
