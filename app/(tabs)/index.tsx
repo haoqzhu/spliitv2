@@ -20,29 +20,29 @@ function getGreeting() {
 export default function HomeScreen() {
   const session = useAuth()
   const [loading, setLoading] = useState(true)
-  const [username, setUsername] = useState('')
+  const [fullName, setFullName] = useState('')
   const [greeting, setGreeting] = useState('Welcome')
 
   useEffect(() => {
     setGreeting(getGreeting())
-    if (session) getUsername()
+    if (session) getFullName()
   }, [session])
 
-  async function getUsername() {
+  async function getFullName() {
     try {
       setLoading(true)
       if (!session?.user) throw new Error('No user on session!')
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('username')
+        .select('full_name')
         .eq('id', session.user.id)
         .single()
 
       if (error) throw error
 
       if (data) {
-        setUsername(data.username ?? '')
+        setFullName(data.full_name ?? '')
       }
     } catch (error: any) {
       Alert.alert(error.message)
@@ -62,7 +62,7 @@ export default function HomeScreen() {
       }>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">
-          {greeting}{username ? `, ${username}` : ''}
+          {greeting}{fullName ? `, ${fullName.split(' ')[0]}` : ''}
         </ThemedText>
         <HelloWave />
       </ThemedView>
