@@ -9,18 +9,13 @@ export default function signUp() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [username, setUsername] = useState('')
+  const [fullName, setFullName] = useState('')
 
   const scheme = useColorScheme() ?? 'light'
   const theme = Colors[scheme]
   
 	const signUp = async () => {
-    if (password !== confirmPassword) {
-      Alert.alert('Passwords do not match')
-      return
-    }
-
 		const { data, error } = await supabase.auth.signUp({
 			email,
 			password,
@@ -36,6 +31,7 @@ export default function signUp() {
       .upsert({
         id: data.user?.id,
         username,
+        full_name: fullName,
       })
 
     if (profileError) {
@@ -61,24 +57,9 @@ export default function signUp() {
 
       <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
         <Ionicons
-          name="person-outline"
-          size={20}
-          style={[styles.inputIcon, { color: theme.icon }]}
-        />
-        <TextInput
-          placeholder="Username"
-          autoCapitalize="none"
-          value={username}
-          onChangeText={setUsername}
-          style={[styles.inputWithIcon, { color: theme.text }]}
-        />
-      </View>
-
-      <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
-        <Ionicons
           name="mail-outline"
           size={20}
-          color={theme.text}
+
           style={[styles.inputIcon, { color: theme.icon }]}
         />
         <TextInput
@@ -94,16 +75,30 @@ export default function signUp() {
 
       <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
         <Ionicons
-          name="lock-closed-outline"
+          name="person-outline"
           size={20}
-          color={theme.text}
           style={[styles.inputIcon, { color: theme.icon }]}
         />
         <TextInput
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+          placeholder="Username"
+          autoCapitalize="none"
+          value={username}
+          onChangeText={setUsername}
+          style={[styles.inputWithIcon, { color: theme.text }]}
+        />
+      </View>
+
+      <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
+        <Ionicons
+          name="person-circle-outline"
+          size={20}
+          style={[styles.inputIcon, { color: theme.icon }]}
+        />
+        <TextInput
+          placeholder="Full Name"
+          autoCapitalize="words"
+          value={fullName}
+          onChangeText={setFullName}
           style={[styles.inputWithIcon, { color: theme.text }]}
         />
       </View>
@@ -112,14 +107,14 @@ export default function signUp() {
         <Ionicons
           name="lock-closed-outline"
           size={20}
-          color={theme.text}
+
           style={[styles.inputIcon, { color: theme.icon }]}
         />
         <TextInput
-          placeholder="Confirm Password"
+          placeholder="Password"
           secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          value={password}
+          onChangeText={setPassword}
           style={[styles.inputWithIcon, { color: theme.text }]}
         />
       </View>

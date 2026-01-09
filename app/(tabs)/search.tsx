@@ -9,6 +9,7 @@ import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, Pressable,
 interface UserProfile {
   id: string
   username: string | null
+  full_name: string | null
   avatar_url: string | null
   website: string | null
 }
@@ -59,7 +60,7 @@ export default function Search() {
       // Search for users by username (case-insensitive)
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, username, avatar_url, website')
+        .select('id, username, full_name, avatar_url, website')
         .ilike('username', `%${query}%`)
         .neq('id', session.user.id) // Exclude current user
         .limit(20) // Limit results
@@ -97,6 +98,11 @@ export default function Search() {
         </View>
         <View style={styles.userInfo}>
           <Text style={[styles.username, { color: theme.text }]}>{item.username || 'No username'}</Text>
+          {item.full_name && (
+            <Text style={[styles.fullName, { color: theme.icon }]} numberOfLines={1}>
+              {item.full_name}
+            </Text>
+          )}
           {item.website && (
             <Text style={[styles.website, { color: theme.icon }]} numberOfLines={1}>
               {item.website}
@@ -211,7 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 0,
-    marginBottom: 15,
+    marginBottom: 13,
   },
   userItemPressed: {
     opacity: 0.85,
@@ -224,8 +230,11 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
+    fontWeight: '700',
+  },
+  fullName: {
+    fontSize: 12,
+    fontWeight: '400',
   },
   website: {
     fontSize: 14,
