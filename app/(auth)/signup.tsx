@@ -6,25 +6,38 @@ import { useState } from 'react'
 import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native'
 
 export default function signUp() {
+  const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [fullName, setFullName] = useState('')
 
   const scheme = useColorScheme() ?? 'light'
   const theme = Colors[scheme]
   
 	const signUp = async () => {
-    if (password !== confirmPassword) {
-      Alert.alert('Passwords do not match')
-      return
-    }
-
-		const { error } = await supabase.auth.signUp({
+		const { data, error } = await supabase.auth.signUp({
 			email,
 			password,
 		})
 
-  	if (error) Alert.alert(error.message)
+  	if (error) {
+      Alert.alert(error.message)
+      return
+    }
+
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .upsert({
+        id: data.user?.id,
+        username,
+        full_name: fullName,
+      })
+
+    if (profileError) {
+      Alert.alert(profileError.message)
+      return
+    }
 	}
 
   return (
@@ -35,27 +48,18 @@ export default function signUp() {
       <Image style={styles.image} source={require('@/assets/images/register.png')} />
       <Pressable style={styles.backButton} onPress={() => router.back() }>
         <Text style={styles.backButtonText}>
-          <Ionicons name="chevron-back" color="#ffffff" size={20} />
+          <Ionicons name="chevron-back" color="#ECEDEE" size={20} />
         </Text>
       </Pressable>
 
       <Text style={[styles.title, { color: theme.text }]}>Register</Text>
-      <Text style={[styles.subtitle, { color: theme.text }]}>Please register to login.</Text>
-
-      {/* <TextInput
-        placeholder="Email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-        style={[styles.input, { backgroundColor: theme.input, color: theme.text }]}
-      /> */}
+      <Text style={[styles.subtitle, { color: theme.text }]}>Create an account to continue.</Text>
 
       <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
         <Ionicons
           name="mail-outline"
           size={20}
-          color={theme.text}
+
           style={[styles.inputIcon, { color: theme.icon }]}
         />
         <TextInput
@@ -71,16 +75,30 @@ export default function signUp() {
 
       <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
         <Ionicons
-          name="lock-closed-outline"
+          name="person-outline"
           size={20}
-          color={theme.text}
           style={[styles.inputIcon, { color: theme.icon }]}
         />
         <TextInput
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+          placeholder="Username"
+          autoCapitalize="none"
+          value={username}
+          onChangeText={setUsername}
+          style={[styles.inputWithIcon, { color: theme.text }]}
+        />
+      </View>
+
+      <View style={[styles.inputWrapper, { backgroundColor: theme.input }]}>
+        <Ionicons
+          name="person-circle-outline"
+          size={20}
+          style={[styles.inputIcon, { color: theme.icon }]}
+        />
+        <TextInput
+          placeholder="Full Name"
+          autoCapitalize="words"
+          value={fullName}
+          onChangeText={setFullName}
           style={[styles.inputWithIcon, { color: theme.text }]}
         />
       </View>
@@ -89,14 +107,14 @@ export default function signUp() {
         <Ionicons
           name="lock-closed-outline"
           size={20}
-          color={theme.text}
+
           style={[styles.inputIcon, { color: theme.icon }]}
         />
         <TextInput
-          placeholder="Confirm Password"
+          placeholder="Password"
           secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          value={password}
+          onChangeText={setPassword}
           style={[styles.inputWithIcon, { color: theme.text }]}
         />
       </View>
@@ -204,7 +222,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 25,
     paddingHorizontal: 16,
-    marginBottom: 25,
+    marginBottom: 15,
   },
   inputIcon: {
     marginRight: 10,
