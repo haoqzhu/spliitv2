@@ -1,8 +1,9 @@
 import Avatar from '@/components/Avatar'
+import { Colors } from '@/constants/theme'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import React, { useEffect, useState } from 'react'
-import { Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View, useColorScheme } from 'react-native'
 
 export default function Account() {
   const session = useAuth()
@@ -10,6 +11,9 @@ export default function Account() {
   const [username, setUsername] = useState('')
   const [website, setWebsite] = useState('')
   const [avatarUrl, setAvatarUrl] = useState('')
+
+  const scheme = useColorScheme() ?? 'light'
+  const theme = Colors[scheme]
 
   useEffect(() => {
     if (session) getProfile()
@@ -65,9 +69,9 @@ export default function Account() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.background }]}
     >
-      <View style={styles.card}>
+      <View>
         <Text style={styles.title}>Account Settings</Text>
         <Text style={styles.subtitle}>Manage your profile information</Text>
 
@@ -126,18 +130,8 @@ export default function Account() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a', // slate-900
     padding: 20,
     justifyContent: 'center',
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 10,
   },
   title: {
     fontSize: 24,
