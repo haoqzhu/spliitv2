@@ -145,7 +145,11 @@ export default function Search() {
 
       {!loading && searchQuery.trim() === '' && (
         <View style={styles.emptyContainer}>
+          <Ionicons name="search-outline" size={64} color={theme.icon} />
           <Text style={[styles.emptyText, { color: theme.icon }]}>
+            No results yet
+          </Text>
+          <Text style={[styles.emptySubtext, { color: theme.icon }]}>
             Start typing to search for your friends...
           </Text>
         </View>
@@ -205,8 +209,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyText: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptySubtext: {
+    fontSize: 14,
     textAlign: 'center',
   },
   listContainer: {
